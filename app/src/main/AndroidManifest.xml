@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.things.permission.MANAGE_INPUT_DRIVERS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
@@ -35,17 +36,23 @@
     <activity android:name="ConnectActivity"
         android:label="@string/app_name"
         android:windowSoftInputMode="adjustPan">
+        <!-- Launch activity as default from Android Studio -->
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
-            <category android:name="android.intent.category.IOT_LAUNCHER" />
+        </intent-filter>
+
+        <!-- Launch activity automatically on boot -->
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.IOT_LAUNCHER"/>
+            <category android:name="android.intent.category.DEFAULT"/>
         </intent-filter>
 
         <intent-filter>
             <action android:name="android.intent.action.VIEW"/>
-            <category android:name="android.intent.category.DEFAULT"/>
             <category android:name="android.intent.category.BROWSABLE"/>
-            <category android:name="android.intent.category.IOT_LAUNCHER"/>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
             <data android:scheme="https" android:host="appr.tc"/>
             <data android:scheme="http" android:host="appr.tc"/>
         </intent-filter>
