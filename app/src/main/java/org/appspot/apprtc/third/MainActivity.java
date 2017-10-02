@@ -2,6 +2,8 @@ package org.appspot.apprtc.third;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +11,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.things.pio.Gpio;
+import com.google.android.things.pio.GpioCallback;
+import com.google.android.things.pio.PeripheralManagerService;
 import com.splunk.mint.Mint;
 
 import org.appspot.apprtc.ConnectActivity;
@@ -18,6 +24,7 @@ import org.appspot.apprtc.R;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.drafts.Draft_6455;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -66,7 +73,43 @@ public class MainActivity extends Activity {
             myTts = new MyTts(this);
 
             // GPIO
-            myGpio = new MyGpio(myTts);
+            //myGpio = new MyGpio(myTts);
+            //new MyGpioTest().start();
+
+
+
+
+            try {
+                PeripheralManagerService peripheralManager = new PeripheralManagerService();
+                Gpio gpio = null;
+                gpio = peripheralManager.openGpio("BCM24");
+                gpio.setActiveType(Gpio.ACTIVE_HIGH);
+                gpio.setDirection(Gpio.DIRECTION_IN);
+                gpio.setEdgeTriggerType(Gpio.EDGE_RISING);
+                Log.i(TAG, "First BCM24=" + gpio.getValue());
+                final GpioCallback gpioCallback = new GpioCallback() {
+                    @Override
+                    public boolean onGpioEdge(Gpio gpio) {
+                        try {
+                            Log.d(TAG, "onGpioEdge callback triggered :: BCM24=" + gpio.getValue());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public void onGpioError(Gpio gpio, int error) {
+                        Log.e(TAG, "onGpioError callback triggered: " + error);
+                    }
+                };
+
+                // Register the callback for when data is available
+                gpio.registerGpioCallback(gpioCallback);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
             //WebSocketServer
             WebSocketImpl.DEBUG = Boolean.getBoolean(MyAppProperties.getProperty("MyWebSocket.debug"));
@@ -79,9 +122,17 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
 
+            AudioManager audioManager =(AudioManager)getSystemService(this.getBaseContext().AUDIO_SERVICE);
+            Log.i(TAG, "Sound device :");
+            for (AudioDeviceInfo deviceInfo : audioManager.getDevices(AudioManager.GET_DEVICES_ALL)) {
+                Log.i(TAG, "Sound device :" + deviceInfo.toString());
+            }
+
         } else {
             setContentView(R.layout.activity_main);
             WebSocketImpl.DEBUG = Boolean.getBoolean(MyAppProperties.getProperty("MyWebSocket.debug"));
+
+
 
             textView = (TextView) findViewById(R.id.textView);
             bOpenDoor = (Button) findViewById(R.id.bOpenDoor);
@@ -129,10 +180,11 @@ public class MainActivity extends Activity {
                     MyDataActivity.getConnectActivity().launchCall(message);
                 }
             });
-
+            myWebserverConnect();
         }
-        myWebserverConnect();
+
         MyDataActivity.setMainActivity(this);
+
     }
 
     private void myWebserverConnect() {

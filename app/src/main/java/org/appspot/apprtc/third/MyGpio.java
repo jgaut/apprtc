@@ -25,7 +25,7 @@ public class MyGpio {
     private Gpio gpio24;
     private Gpio gpio23;
     private Gpio gpio18;
-    private GpioCallback mGpio24Callback;
+    private final GpioCallback mGpio24Callback;
     private GpioCallback mGpioTestCallback;
     private MyTts myTts;
 
@@ -51,7 +51,7 @@ public class MyGpio {
             public boolean onGpioEdge(Gpio gpio) {
                 // Read the active low pin state
                 try {
-                    //Log.i("GPIO", "BCM24="+gpio.getValue());
+                    Log.i("GPIO", "BCM24="+gpio.getValue());
                     if (gpio.getValue() && delay) {
                         delay=false;
                         Log.i(TAG, gpio.toString()+"=" + gpio.getValue());
@@ -128,16 +128,15 @@ public class MyGpio {
 
 
         try {
-            String bcm = "BCM5";
+            String bcm = "BCM24";
             gpio24 = manager.openGpio(bcm);
-            // Initialize the pin as an input
-            gpio24.setDirection(Gpio.DIRECTION_IN);
             // Low voltage is considered active
             gpio24.setActiveType(Gpio.ACTIVE_LOW);
-
+            // Initialize the pin as an input
+            gpio24.setDirection(Gpio.DIRECTION_IN);
             // Register for all state changes
-            gpio24.setEdgeTriggerType(Gpio.EDGE_BOTH);
-            //gpio24.registerGpioCallback(mGpioTestCallback);
+            gpio24.setEdgeTriggerType(Gpio.EDGE_RISING);
+            gpio24.registerGpioCallback(mGpio24Callback);
             Log.i(TAG, "First time "+bcm+"=" + gpio24.getValue());
         } catch (IOException e) {
             e.printStackTrace();
