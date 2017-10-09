@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         MyAppProperties.init(this.getApplicationContext());
 
         //Mint
-        // Set the application environment
+        //Set the application environment
         Mint.setApplicationEnvironment(Mint.appEnvironmentStaging);
         Mint.enableDebugLog();
         Mint.setUserOptOut(false);
@@ -73,18 +73,15 @@ public class MainActivity extends Activity {
             myTts = new MyTts(this);
 
             // GPIO
-            //myGpio = new MyGpio(myTts);
+            myGpio = new MyGpio(myTts);
             //new MyGpioTest().start();
 
-
-
-
-            try {
+            /*try {
                 PeripheralManagerService peripheralManager = new PeripheralManagerService();
                 Gpio gpio = null;
                 gpio = peripheralManager.openGpio("BCM24");
-                gpio.setActiveType(Gpio.ACTIVE_HIGH);
                 gpio.setDirection(Gpio.DIRECTION_IN);
+                gpio.setActiveType(Gpio.ACTIVE_HIGH);
                 gpio.setEdgeTriggerType(Gpio.EDGE_RISING);
                 Log.i(TAG, "First BCM24=" + gpio.getValue());
                 final GpioCallback gpioCallback = new GpioCallback() {
@@ -108,7 +105,7 @@ public class MainActivity extends Activity {
                 gpio.registerGpioCallback(gpioCallback);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
             //WebSocketServer
@@ -131,8 +128,6 @@ public class MainActivity extends Activity {
         } else {
             setContentView(R.layout.activity_main);
             WebSocketImpl.DEBUG = Boolean.getBoolean(MyAppProperties.getProperty("MyWebSocket.debug"));
-
-
 
             textView = (TextView) findViewById(R.id.textView);
             bOpenDoor = (Button) findViewById(R.id.bOpenDoor);

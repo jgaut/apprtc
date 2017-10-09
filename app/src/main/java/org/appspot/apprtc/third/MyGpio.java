@@ -42,9 +42,6 @@ public class MyGpio {
             Log.i(TAG, "List of available ports: " + portList);
         }
 
-     /*myGpioTest=new MyGpioTest();
-        myGpioTest.start();
-*/
         //Gestion du callback
         mGpio24Callback = new GpioCallback() {
             @Override
