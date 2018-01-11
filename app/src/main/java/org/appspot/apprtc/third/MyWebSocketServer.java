@@ -1,9 +1,7 @@
 package org.appspot.apprtc.third;
 
-import android.app.Activity;
 import android.util.Log;
 
-import org.appspot.apprtc.ConnectActivity;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -11,7 +9,6 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by jeremy on 09/06/2017.
@@ -59,18 +56,19 @@ public class MyWebSocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         MyLog.logEvent("WebSocketServer received message=" + message);
+        MyLog.logEvent(message);
         if (message != null) {
-            this.sendToAll("echo : "+ message);
+            this.sendToAll("Server received this message : " +message);
             if (message.equals("open door")) {
                 myGpio.openDoor();
             } else if (message.equals("echo")) {
 
             } else if (message.equals("ring")) {
-                myGpio.getmGpio24Callback().onGpioEdge(myGpio.getGpio18());
-                //myTts.speak("Someone ringing the bell!");
+                myGpio.mGpioRingCallback().onGpioEdge(myGpio.getGpioTestRing());
 
             } else if (message.startsWith("intercom")){
                 if(MyDataActivity.getCallActivity()!=null){
+                    Log.i(TAG, "Cancel old call");
                     MyDataActivity.getCallActivity().onCallHangUp();
                 }
                 MyDataActivity.getConnectActivity().launchCall(message);

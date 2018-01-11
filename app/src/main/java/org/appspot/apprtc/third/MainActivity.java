@@ -30,12 +30,20 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Random;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends Activity {
 
     //Client
-    private MyWebSocketClient myWebSocketClient;
     private TextView textView;
     private Button bOpenDoor;
     private Button bEcho;
@@ -56,6 +64,37 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         // Obtain all app properties
         MyAppProperties.init(this.getApplicationContext());
+
+        //https => http://stacktips.com/snippet/how-to-trust-all-certificates-for-httpurlconnection-in-android
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+                            return myTrustedAnchors;
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String arg0, SSLSession arg1) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+        }
 
         //Mint
         //Set the application environment
@@ -118,6 +157,7 @@ public class MainActivity extends Activity {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
+            MyDataActivity.setMyWebSocketServer(myWebSocketServer);
 
             AudioManager audioManager =(AudioManager)getSystemService(this.getBaseContext().AUDIO_SERVICE);
             Log.i(TAG, "Sound device :");
@@ -128,7 +168,7 @@ public class MainActivity extends Activity {
         } else {
             setContentView(R.layout.activity_main);
             WebSocketImpl.DEBUG = Boolean.getBoolean(MyAppProperties.getProperty("MyWebSocket.debug"));
-
+            MyDataActivity.setMyWebSocketClientManager(new MyWebSocketClientManager());
             textView = (TextView) findViewById(R.id.textView);
             bOpenDoor = (Button) findViewById(R.id.bOpenDoor);
             bEcho = (Button) findViewById(R.id.bEcho);
@@ -140,28 +180,28 @@ public class MainActivity extends Activity {
             bOpenDoor.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    myWebSocketClient.send("open door");
+                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("open door");
                 }
             });
 
             bEcho.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    myWebSocketClient.send("echo");
+                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("echo");
                 }
             });
 
             bConnect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    myWebserverConnect();
+                    MyDataActivity.getMyWebSocketClientManager().connect(0);
                 }
             });
 
             bRing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    myWebSocketClient.send("ring");
+                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("ring");
                 }
             });
 
@@ -171,27 +211,32 @@ public class MainActivity extends Activity {
                     Random randomGenerator = new Random();
                     message = "intercom"+Math.abs(randomGenerator.nextInt(100));
                     Log.i(TAG, "https://appr.tc/r/"+message);
-                    myWebSocketClient.send(message);
+                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send(message);
                     MyDataActivity.getConnectActivity().launchCall(message);
                 }
             });
-            myWebserverConnect();
+            MyDataActivity.getMyWebSocketClientManager().connect(0);
         }
 
         MyDataActivity.setMainActivity(this);
 
     }
 
-    private void myWebserverConnect() {
-        try {
-            if (myWebSocketClient != null) {
-                myWebSocketClient.close();
-            }
-            myWebSocketClient = new MyWebSocketClient(new URI("ws://"+MyAppProperties.getProperty("MyWebSocket.hostname")+":"+MyAppProperties.getProperty("MyWebSocket.port")), new Draft_6455(), textView, bConnect);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        myWebSocketClient.connect();
+
+    public TextView getTextView() {
+        return textView;
+    }
+
+    public void setTextView(TextView textView) {
+        this.textView = textView;
+    }
+
+    public Button getbConnect() {
+        return bConnect;
+    }
+
+    public void setbConnect(Button bConnect) {
+        this.bConnect = bConnect;
     }
 
 }

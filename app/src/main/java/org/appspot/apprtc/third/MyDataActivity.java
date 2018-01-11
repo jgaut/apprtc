@@ -9,6 +9,30 @@ import org.appspot.apprtc.ConnectActivity;
 
 public class MyDataActivity {
 
+
+
+    private static ConnectActivity connectActivity;
+    private static CallActivity callActivity;
+    private static MainActivity mainActivity;
+    private static MyWebSocketServer myWebSocketServer;
+    private static MyWebSocketClientManager myWebSocketClientManager;
+
+    public static MyWebSocketClientManager getMyWebSocketClientManager() {
+        return myWebSocketClientManager;
+    }
+
+    public static void setMyWebSocketClientManager(MyWebSocketClientManager myWebSocketClientManager) {
+        MyDataActivity.myWebSocketClientManager = myWebSocketClientManager;
+    }
+
+    public static MyWebSocketServer getMyWebSocketServer() {
+        return myWebSocketServer;
+    }
+
+    public static void setMyWebSocketServer(MyWebSocketServer myWebSocketServer) {
+        MyDataActivity.myWebSocketServer = myWebSocketServer;
+    }
+
     public static ConnectActivity getConnectActivity() {
         return connectActivity;
     }
@@ -32,9 +56,5 @@ public class MyDataActivity {
     public static void setMainActivity(MainActivity mainActivity) {
         MyDataActivity.mainActivity = mainActivity;
     }
-
-    public static ConnectActivity connectActivity;
-    public static CallActivity callActivity;
-    public static MainActivity mainActivity;
 
 }

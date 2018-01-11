@@ -5,7 +5,7 @@ android {
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "org.appspot.apprtc"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -16,6 +16,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
 
@@ -30,10 +34,19 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
-    implementation 'org.webrtc:google-webrtc:1.0.+'
-    compile 'com.splunk:mint-android-sdk:5.2.1'
-    provided 'com.google.android.things:androidthings:0.4-devpreview'
-    compile 'org.java-websocket:Java-WebSocket:1.3.4'
-    compile 'com.splunk:mint-android-instrumentation-okhttp:5.2.1'
+
+        //https://webrtc.org/native-code/android/
+    implementation 'org.webrtc:google-webrtc:1.0.20849'
+
+    //https://developer.android.com/things/training/first-device/create-studio-project.html
+    compileOnly 'com.google.android.things:androidthings:+'
+
+    // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
+    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.3.5'
+
+    //https://docs.splunk.com/Documentation/MintAndroidSDK/5.2.x/DevGuide/Requirementsandinstallation
+    compile 'com.splunk:mint-android-sdk:5.2.2'
+    compile 'com.splunk:mint-android-instrumentation-okhttp:5.2.2'
+
     compile 'javax.mail:javax.mail-api:1.5.1'
 }

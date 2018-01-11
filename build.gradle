@@ -4,13 +4,13 @@ buildscript {
     
     repositories {
         maven {
-            url uri('mint-plugin-repo-5.2.1')
+            url uri('mint-plugin-repo-5.2.2')
         }
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta7'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -21,7 +21,7 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url uri('mint-plugin-repo-5.2.1')
+            url uri('mint-plugin-repo-5.2.2')
         }
         google()
         jcenter()

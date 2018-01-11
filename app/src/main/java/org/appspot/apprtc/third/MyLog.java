@@ -2,6 +2,8 @@ package org.appspot.apprtc.third;
 
 import android.util.Log;
 
+import com.splunk.mint.Mint;
+
 //import com.splunk.mint.Mint;
 
 /**
@@ -12,8 +14,8 @@ public class MyLog {
 
     public static void logEvent(String s) {
 
-        //Mint.logEvent(s);
-        //Mint.flush();
+        Mint.logEvent(s);
+        Mint.flush();
         Log.i("Splunk", s);
 
     }
