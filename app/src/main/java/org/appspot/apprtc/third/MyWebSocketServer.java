@@ -8,6 +8,7 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.Collection;
 
 /**
@@ -74,7 +75,10 @@ public class MyWebSocketServer extends WebSocketServer {
                 MyDataActivity.getConnectActivity().launchCall(message);
                 Log.i(TAG, "https://appr.tc/r/"+message);
                 this.sendToAll("https://appr.tc/r/"+message);
-            }else{
+
+            } else if (message.equals("next ring")){
+                myGpio.setTimeNextRing(System.currentTimeMillis() / 1000);
+            } else{
                 Log.i(TAG, "message : \""+message+"\" non valide.");
             }
         } else {

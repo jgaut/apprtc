@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
     private Button bConnect;
     private Button bRing;
     private Button bCall;
-    private EditText editTextRoomId;
+    private Button bNextRing;
 
     //Server
     public static MyWebSocketServer myWebSocketServer;
@@ -113,39 +113,6 @@ public class MainActivity extends Activity {
 
             // GPIO
             myGpio = new MyGpio(myTts);
-            //new MyGpioTest().start();
-
-            /*try {
-                PeripheralManagerService peripheralManager = new PeripheralManagerService();
-                Gpio gpio = null;
-                gpio = peripheralManager.openGpio("BCM24");
-                gpio.setDirection(Gpio.DIRECTION_IN);
-                gpio.setActiveType(Gpio.ACTIVE_HIGH);
-                gpio.setEdgeTriggerType(Gpio.EDGE_RISING);
-                Log.i(TAG, "First BCM24=" + gpio.getValue());
-                final GpioCallback gpioCallback = new GpioCallback() {
-                    @Override
-                    public boolean onGpioEdge(Gpio gpio) {
-                        try {
-                            Log.d(TAG, "onGpioEdge callback triggered :: BCM24=" + gpio.getValue());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public void onGpioError(Gpio gpio, int error) {
-                        Log.e(TAG, "onGpioError callback triggered: " + error);
-                    }
-                };
-
-                // Register the callback for when data is available
-                gpio.registerGpioCallback(gpioCallback);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
 
             //WebSocketServer
             WebSocketImpl.DEBUG = Boolean.getBoolean(MyAppProperties.getProperty("MyWebSocket.debug"));
@@ -175,7 +142,7 @@ public class MainActivity extends Activity {
             bConnect = (Button) findViewById(R.id.bConnect);
             bRing = (Button) findViewById(R.id.bRing);
             bCall = (Button) findViewById(R.id.bCall);
-            editTextRoomId = (EditText) findViewById(R.id.editTextRoomId);
+            bNextRing = (Button) findViewById(R.id.bNextRing);
 
             bOpenDoor.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -205,6 +172,13 @@ public class MainActivity extends Activity {
                 }
             });
 
+            bNextRing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("next ring");
+                }
+            });
+
             bCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -221,7 +195,6 @@ public class MainActivity extends Activity {
         MyDataActivity.setMainActivity(this);
 
     }
-
 
     public TextView getTextView() {
         return textView;

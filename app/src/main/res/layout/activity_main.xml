@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/bCall"
+        android:layout_toEndOf="@+id/bConnect"
         android:text="Open Door" />
 
     <Button
@@ -42,6 +42,14 @@
         android:layout_alignBottom="@+id/bConnect"
         android:layout_toEndOf="@+id/bRing"
         android:text="Echo" />
+
+    <Button
+        android:id="@+id/bNextRing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/editTextRoomId"
+        android:layout_toEndOf="@+id/bOpenDoor"
+        android:text="Next Ring" />
 
     <Button
         android:id="@+id/bRing"
@@ -63,18 +71,9 @@
         android:id="@+id/bCall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/bConnect"
-        android:layout_below="@+id/bEcho"
+        android:layout_below="@+id/bOpenDoor"
+        android:layout_toEndOf="@+id/bEcho"
         android:text="Call" />
-
-    <EditText
-        android:id="@+id/editTextRoomId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/bEcho"
-        android:layout_below="@+id/bEcho"
-        android:ems="10"
-        android:inputType="textPersonName" />
 
 
 </RelativeLayout>

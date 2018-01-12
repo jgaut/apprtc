@@ -29,6 +29,8 @@ public class MyGpio {
     private final GpioCallback mGpioRingCallback;
     private GpioCallback mGpioTestCallback;
     private final MyTts myTts;
+    private long timeNextRing=0;
+    private long timeNextRingDelay = 60*5;
 
     private MyGpioTest myGpioTest;
 
@@ -54,6 +56,10 @@ public class MyGpio {
                         delay=false;
                         Log.i(TAG, "Setup Security delay=" + delay);
                         MyLog.logEvent(gpio.getName()+ "=" + gpio.getValue());
+                        if(timeNextRing>=(System.currentTimeMillis() / 1000)){
+                            openDoor();
+                            timeNextRing=0;
+                        }
                         new Timer().schedule(new TimerTask(){
                             public void run(){
                                 delay=true;
@@ -143,5 +149,9 @@ public class MyGpio {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setTimeNextRing(long timeNextRing) {
+        this.timeNextRing = timeNextRing*this.timeNextRingDelay;
     }
 }
