@@ -70,7 +70,7 @@ public class MyWebSocketServer extends WebSocketServer {
             } else if (message.startsWith("intercom")){
                 if(MyDataActivity.getCallActivity()!=null){
                     Log.i(TAG, "Cancel old call");
-                    MyDataActivity.getCallActivity().onCallHangUp();
+                    //MyDataActivity.getCallActivity().onCallHangUp();
                 }
                 MyDataActivity.getConnectActivity().launchCall(message);
                 Log.i(TAG, "https://appr.tc/r/"+message);

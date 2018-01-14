@@ -1,5 +1,7 @@
 package org.appspot.apprtc.third;
 
+import android.util.Log;
+
 import org.java_websocket.drafts.Draft_6455;
 
 import java.net.URI;
@@ -9,21 +11,16 @@ import java.net.URISyntaxException;
  * Created by jgautier on 10/01/2018.
  */
 
-public class MyWebSocketClientManager extends Thread{
-
+public class MyWebSocketClientManager {
+    private String TAG = this.getClass().toString();
     private MyWebSocketClient myWebSocketClient;
 
-    public MyWebSocketClient getMyWebSocketClient() {
-        return myWebSocketClient;
+
+    MyWebSocketClientManager(){
+        super();
     }
 
-    public void setMyWebSocketClient(MyWebSocketClient myWebSocketClient) {
-        this.myWebSocketClient = myWebSocketClient;
-    }
-
-    MyWebSocketClientManager(){}
-
-    public void connect(int timeout) {
+    public void connect() {
         try {
             if (myWebSocketClient != null && myWebSocketClient.isOpen()) {
                 myWebSocketClient.close();
@@ -33,10 +30,15 @@ public class MyWebSocketClientManager extends Thread{
             e.printStackTrace();
         }
         myWebSocketClient.connect();
-        try {
-            Thread.sleep(timeout);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    }
+
+    public void disconnect() {
+        if (myWebSocketClient != null) {
+            myWebSocketClient.close();
         }
+    }
+
+    public void send(String str){
+        this.myWebSocketClient.send(str);
     }
 }

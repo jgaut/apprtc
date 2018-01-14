@@ -30,9 +30,9 @@ public class MyWebSocketClient extends WebSocketClient {
 
     @Override
     public void onOpen( ServerHandshake handshakedata ) {
-        MyDataActivity.getMainActivity().getTextView().append("\n"+ "opened connection. Timeout="+this.getConnectionLostTimeout() );
+        MyDataActivity.getMainActivity().getTextView().append("\n"+ "opened connection. Timeout="+this.getConnectionLostTimeout()+"    "+this.getResourceDescriptor() );
         // if you plan to refuse connection based on ip or httpfields overload: onWebsocketHandshakeReceivedAsClient
-        MyDataActivity.getMainActivity().getbConnect().setEnabled(false);
+        //MyDataActivity.getMainActivity().getbConnect().setEnabled(false);
     }
 
     @Override
@@ -46,8 +46,10 @@ public class MyWebSocketClient extends WebSocketClient {
     @Override
     public void onClose( int code, String reason, boolean remote ) {
         // The codecodes are documented in class org.java_websocket.framing.CloseFrame
-        MyDataActivity.getMainActivity().getTextView().append("\n"+"Connection closed by " + ( remote ? "remote peer" : "us" ) + ". reason=" +reason);
-        MyDataActivity.getMyWebSocketClientManager().connect(5000);
+        //MyDataActivity.getMainActivity().getTextView().append("\n"+"Connection closed by " + ( remote ? "remote peer" : "us" ) + ". reason=" +reason);
+        Log.i(TAG, "\n"+"Connection closed by " + ( remote ? "remote peer" : "us" ) + ". reason=" +reason);
+        //MyDataActivity.getMyWebSocketClientManager().connect(5000);
+        //Log.i(TAG, "try to connect !");
     }
 
     @Override

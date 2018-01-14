@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private Button bOpenDoor;
     private Button bEcho;
     private Button bConnect;
+    private Button bDisconnect;
     private Button bRing;
     private Button bCall;
     private Button bNextRing;
@@ -140,6 +141,7 @@ public class MainActivity extends Activity {
             bOpenDoor = (Button) findViewById(R.id.bOpenDoor);
             bEcho = (Button) findViewById(R.id.bEcho);
             bConnect = (Button) findViewById(R.id.bConnect);
+            bDisconnect = (Button) findViewById(R.id.bDisconnect);
             bRing = (Button) findViewById(R.id.bRing);
             bCall = (Button) findViewById(R.id.bCall);
             bNextRing = (Button) findViewById(R.id.bNextRing);
@@ -147,35 +149,42 @@ public class MainActivity extends Activity {
             bOpenDoor.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("open door");
+                    MyDataActivity.getMyWebSocketClientManager().send("open door");
                 }
             });
 
             bEcho.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("echo");
+                    MyDataActivity.getMyWebSocketClientManager().send("echo");
                 }
             });
 
             bConnect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyDataActivity.getMyWebSocketClientManager().connect(0);
+                    MyDataActivity.getMyWebSocketClientManager().connect();
+                }
+            });
+
+            bDisconnect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MyDataActivity.getMyWebSocketClientManager().disconnect();
                 }
             });
 
             bRing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("ring");
+                    MyDataActivity.getMyWebSocketClientManager().send("ring");
                 }
             });
 
             bNextRing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send("next ring");
+                    MyDataActivity.getMyWebSocketClientManager().send("next ring");
                 }
             });
 
@@ -183,13 +192,13 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View view) {
                     Random randomGenerator = new Random();
-                    message = "intercom"+Math.abs(randomGenerator.nextInt(100));
+                    message = "intercom"+Math.abs(randomGenerator.nextInt(10000));
                     Log.i(TAG, "https://appr.tc/r/"+message);
-                    MyDataActivity.getMyWebSocketClientManager().getMyWebSocketClient().send(message);
+                    MyDataActivity.getMyWebSocketClientManager().send(message);
                     MyDataActivity.getConnectActivity().launchCall(message);
                 }
             });
-            MyDataActivity.getMyWebSocketClientManager().connect(0);
+            MyDataActivity.getMyWebSocketClientManager().connect();
         }
 
         MyDataActivity.setMainActivity(this);
